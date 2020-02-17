@@ -40,7 +40,8 @@ func getFileInfo(filename string) {
 	if err != nil {
 		log.Fatalf("stat: %v", err)
 	}
-	log.Printf("file %q: size: %d bytes", stat.Name(), stat.Size())
+	// log.Printf("file %q: size: %d bytes", stat.Name(), stat.Size())
+	log.Printf("size: %d bytes", stat.Size())
 	// log.Printf("file %q: size: %d, mod. time: %q", stat.Name(), stat.Size(), stat.ModTime())
 	// log.Printf("file sys: %T", stat.Sys())
 
