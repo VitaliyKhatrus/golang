@@ -7,6 +7,8 @@ import (
 	"os/exec"
 )
 
+//find /mnt/csdrive/cassandra/data/ms3/contact_personalisation3-a632ade0bd3e11e6bf5d6331f56c768a/snapshots/1581130801506 -type f -links 1 -printf "%s\n"
+
 func main() {
 	getFileInfo("hello.txt")
 	fmt.Println(getShellOutput())
@@ -32,7 +34,7 @@ func getFileInfo(filename string) {
 }
 
 func getShellOutput() string {
-	cmd, err := exec.Command("/bin/bash", "-c", "find /home/solid/GO/work/src/files3/new -type d -name 'snapshot'").Output()
+	cmd, err := exec.Command("/bin/bash", "-c", "find /home/solid/GO/work/src/github.com/VitaliyKhatrus/files3/new -type d -name 'snapshot' -exec find {} -type f \\;").Output()
 	if err != nil {
 		// fmt.Fprintln(w, "Error: ", err)
 		log.Fatal("Error: ", err)
