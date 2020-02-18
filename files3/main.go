@@ -8,28 +8,27 @@ import (
 	"strings"
 )
 
-//find /mnt/csdrive/cassandra/data/ms3/contact_personalisation3-a632ade0bd3e11e6bf5d6331f56c768a/snapshots/1581130801506 -type f -links 1 -printf "%s\n"
-
 func main() {
 
-	// fmt.Println(strings.Trim(getShellOutput(), "\n"))
 	st := strings.Split(getShellOutput(), "\n")
-	// fmt.Println(len(st))
-	// fmt.Println(st[4])
-	// sl := strings.Split(getShellOutput(), " ")
+	var x int64
 	for i := range st[:len(st)-1] {
 		fmt.Println(st[i])
-		// fmt.Println(i)
-		getFileInfo(st[i])
-		// fmt.Printf("%T\n", st[i])
-	}
-	// files := "/home/solid/GO/work/src/github.com/VitaliyKhatrus/files3/new/3/snapshot/158001/terra.txt"
-	// getFileInfo(files)
+		value := getFileInfo(st[i])
+		x += value
 
+	}
+	fmt.Println(x)
+	switch check := x; {
+	case check < 1000:
+		fmt.Println("Total size: ", x, "bytes")
+	case check > 1000000000:
+		fmt.Println("Total size: ", x/1024000000, "Gb")
+
+	}
 }
 
-func getFileInfo(filename string) {
-	// fmt.Println(filename)
+func getFileInfo(filename string) int64 {
 	f, err := os.Open(filename)
 	if err != nil {
 		log.Fatalf("open: %v", err)
@@ -40,19 +39,17 @@ func getFileInfo(filename string) {
 	if err != nil {
 		log.Fatalf("stat: %v", err)
 	}
-	// log.Printf("file %q: size: %d bytes", stat.Name(), stat.Size())
 	log.Printf("size: %d bytes", stat.Size())
 	// log.Printf("file %q: size: %d, mod. time: %q", stat.Name(), stat.Size(), stat.ModTime())
 	// log.Printf("file sys: %T", stat.Sys())
+	return stat.Size()
 
-	// sysstat := stat.Sys().(*syscall.Stat_t)
-	// log.Printf("file %q: access time: %d, mod. time: %d, change time: %d", stat.Name(), sysstat.Atim.Nano(), sysstat.Mtim.Nano(), sysstat.Ctim.Nano())
 }
 
 func getShellOutput() string {
-	cmd, err := exec.Command("/bin/bash", "-c", "find /home/solid/GO/work/src/github.com/VitaliyKhatrus/files3/new -type d -name 'snapshot' -exec find {} -type f \\;").Output()
+	// cmd, err := exec.Command("/bin/bash", "-c", "find /home/user/GO/src/github.com/VitaliyKhatrus/golang/files3 -type d -name 'snapshot' -exec find {} -type f \\;").Output()
+	cmd, err := exec.Command("/bin/bash", "-c", "find /mnt/csdrive/cassandra/data -type d -name 'snapshots' -exec find {} -type f -links 1 \\;").Output()
 	if err != nil {
-		// fmt.Fprintln(w, "Error: ", err)
 		log.Fatal("Error: ", err)
 	}
 
