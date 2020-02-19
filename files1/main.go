@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -10,11 +11,18 @@ import (
 	"syscall"
 )
 
-func main() {
-	var files []string
-	var x int64
+var (
+	root  string
+	files []string
+	x     int64
+)
 
-	root := "/mnt/csdrive/cassandra/data"
+func init() {
+	flag.StringVar(&root, "path", "/mnt/csdrive/cassandra/data", "help message for flagname")
+	flag.Parse()
+}
+
+func main() {
 	err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
 		if !info.IsDir() {
 			files = append(files, path)
@@ -23,7 +31,7 @@ func main() {
 		return nil
 	})
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	for i, file := range files {
 		re := regexp.MustCompile("snapshot")
@@ -49,13 +57,14 @@ func main() {
 	}
 }
 func getFileInfo(filename string, count int) int64 {
-	f, err := os.Open(filename)
-	if err != nil {
-		log.Fatalf("open: %v", err)
-	}
-	defer f.Close()
+	// f, err := os.Open(filename)
+	// if err != nil {
+	// 	log.Fatalf("open: %v", err)
+	// }
+	// defer f.Close()
 
-	stat, err := f.Stat()
+	// stat, err := f.Stat()
+	stat, err := os.Stat(filename)
 	if err != nil {
 		log.Fatalf("stat: %v", err)
 	}
