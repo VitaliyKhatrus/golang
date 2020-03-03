@@ -1,0 +1,6 @@
+hostname: "hostname.domain"
+port: "1725"
+id: 7652399
+auth: 
+  username: "jim"
+  password: "secret"
